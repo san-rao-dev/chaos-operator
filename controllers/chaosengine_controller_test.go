@@ -32,6 +32,8 @@ import (
 	litmusFakeClientset "sigs.k8s.io/controller-runtime/pkg/client/fake"
 
 	chaosTypes "github.com/litmuschaos/chaos-operator/pkg/types"
+
+	"reflect"
 )
 
 func TestGetChaosRunnerENV(t *testing.T) {
@@ -829,10 +831,10 @@ func TestStartReqLogger(t *testing.T) {
 	for name, mock := range tests {
 		t.Run(name, func(t *testing.T) {
 			req := startReqLogger(mock.request)
-			if mock.isErr && req != nil {
+			if mock.isErr && !reflect.ValueOf(req).IsZero()  {
 				t.Fatalf("Test %q failed: expected error not to be nil", name)
 			}
-			if !mock.isErr && req == nil {
+			if !mock.isErr && reflect.ValueOf(req).IsZero() {
 				t.Fatalf("Test %q failed: expected error to be nil", name)
 			}
 		})
